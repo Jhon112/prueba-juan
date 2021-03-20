@@ -1,64 +1,45 @@
 import { useState } from 'react';
 import SerieFibonacci from './serieFibonacci';
+import Form from '../form';
 
 function Ejercicio1() {
-  const [limite, setLimite] = useState(0);
   const [mostrarSerie, setMostrarSerie] = useState(false);
   const [serie, setSerie] = useState([]);
-  const [error, setError] = useState('')
-  const [btnDesactivado, desactivarBtn] = useState(true)
 
-  const empezarFibonacci = event => {
+  const empezarFibonacci = (event, limite) => {
     event.preventDefault()
     setMostrarSerie(true)
-    calcularSerie(limite)
-  }
-
-  function calcularSerie(limite){
     if (limite === 1) {
       setSerie([1])
     } else {
-      let serieFibo = [1, 1];
-
-      for(let i=2; i < limite; i++){
-        serieFibo.push(serieFibo[i-1] + serieFibo[i-2]);
-      }
-  
-      setSerie(serieFibo)
-    }    
+      calcularSerie(limite)
+    }
   }
 
-  const validarInput = event => {
-    let input = event.target.value;
+  function calcularSerie(limite){
+    let serieFibo = [1, 1];
 
-    setMostrarSerie(false)
-    if (input < 1 || noNumero(input)) {
-      desactivarBtn(true)
-      setError('Solo se aceptan numeros, y tiene que ser mayor a 1.')
-    } else {
-      desactivarBtn(false)
-      setError('')
-      setLimite(parseInt(input))
-    } 
-  }
+    for(let i=2; i < limite; i++){
+      serieFibo.push(serieFibo[i-1] + serieFibo[i-2]);
+    }
 
-  const noNumero = input => {
-    const patron = /[A-Za-z]/;
-    return patron.test(input);
+    setSerie(serieFibo)
   }
  
   return (
     <div>
       <h1>Serie Fibonacci</h1>
-      <form  onSubmit={empezarFibonacci}>
-        <div>
-            <input type="text" placeholder="Limite de numeros" onChange={validarInput} name="limite"></input>
-            <span style={{color: "red"}}>{error}</span>
-        </div>
-        <button type="submit" className="btn btn-primary" disabled={btnDesactivado}>Enviar</button>
-      </form>
+      <p>
+        En el input de texto se debe ingresar un número entero igual o mayor a 1 que representa la cantidad
+        de números que deseamos mostrar de la serie y al presionar el botón se deben
+        mostrar en pantalla.
+        <br/>
+        Ejemplo: Si la caja de texto tiene el número 6, al presionar el botón se deberían mostrar
+        los números (1, 1, 2, 3, 5, 8).
+      </p>
+      <Form funcionEjercicio={empezarFibonacci} setMostrarResultado={setMostrarSerie} />
 
-      { mostrarSerie && <SerieFibonacci serie={serie} limite={limite} /> }
+      { mostrarSerie && <SerieFibonacci serie={serie} limite={serie.length} /> }
     </div>
   );
 }
